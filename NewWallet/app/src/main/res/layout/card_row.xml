@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardRelativeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="240dp"
+    android:layout_marginBottom="@dimen/margin_card_flatten"
+    android:background="@drawable/shape_card"
+    android:padding="@dimen/padding">
+
+
+    <TextView
+        android:id="@+id/textViewCurrency"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textViewAmount"
+        android:layout_toLeftOf="@+id/textViewAmount"
+        android:text="USD"
+        android:textColor="@color/colorWhite"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/textViewAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:text="200"
+        android:textColor="@color/colorWhite"
+        android:textSize="24sp" />
+
+
+    <ImageView
+        android:id="@+id/logoImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:scaleType="fitXY"
+        app:srcCompat="@drawable/svg_card_logo" />
+
+    <TextView
+        android:id="@+id/textViewNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_horizontal"
+        android:text="1234     1234     1234     1234"
+        android:textColor="@color/colorWhite"
+        android:textSize="22sp" />
+
+
+</RelativeLayout>
