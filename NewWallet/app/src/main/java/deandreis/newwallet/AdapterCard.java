@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.CardViewHolder
     @Override
     public void onBindViewHolder(CardViewHolder holder, int position) {
         holder.setItem(cardList.get(position));
-        holder.bind(cardList.get(position), listener);
+        holder.bind(cardList.get(position), listener,position -1);
     }
 
 
@@ -61,6 +62,10 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.CardViewHolder
         @BindView(R.id.cardRelativeLayout)
         RelativeLayout cardRelativeLayout;
 
+        @BindView(R.id.textViewAmount)
+        TextView textViewAmount;
+
+
         private CardViewHolder(View v) {
             super(v);
             context = v.getContext();
@@ -69,26 +74,30 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.CardViewHolder
 
         private void setItem(Card card) {
 
-//            int marginFlatten = (int) context.getResources().getDimension(R.dimen.margin_card_flatten);
-//            int margin = (int) context.getResources().getDimension(R.dimen.margin);
+            textViewAmount.setText(String.valueOf(card.value));
 
-//            if(card.isExpanded()){
-//                RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) cardRelativeLayout.getLayoutParams();
-//                params.setMargins(0, 0, 0, margin);
-//                cardRelativeLayout.setLayoutParams(params);
-//            }else{
-//                RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) cardRelativeLayout.getLayoutParams();
-//                params.setMargins(0, 0, 0,marginFlatten);
-//                cardRelativeLayout.setLayoutParams(params);
-//            }
+
+            int marginFlatten = (int) context.getResources().getDimension(R.dimen.margin_card_flatten);
+            int margin = (int) context.getResources().getDimension(R.dimen.margin);
+
+            RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) cardRelativeLayout.getLayoutParams();
+
+            if(card.isExpanded()){
+                params.setMargins(0, 0, 0, margin);
+            }else{
+                params.setMargins(0, 0, 0,marginFlatten);
+            }
+
+            cardRelativeLayout.setLayoutParams(params);
+            cardRelativeLayout.setVisibility(View.VISIBLE);
 
         }
 
-        public void bind(final Card card, final OnCardClickListener listener) {
+        public void bind(final Card card, final OnCardClickListener listener, final int previousPosition) {
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
-                    listener.onCardClick(card,itemView);
+                    listener.onCardClick(card,itemView,previousPosition);
                 }
             });
         }
