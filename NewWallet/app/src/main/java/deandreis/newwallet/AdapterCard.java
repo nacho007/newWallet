@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -12,6 +13,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static deandreis.newwallet.MainActivity.cardContainerHeight;
 
 /**
  * Created by ignaciodeandreisdenis on 9/21/16.
@@ -24,7 +27,7 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.CardViewHolder
     private final OnCardClickListener listener;
 
     public AdapterCard(List<Card> cardList, OnCardClickListener listener) {
-        this.cardList = cardList;
+        this.setCardList(cardList);
         this.listener = listener;
     }
 
@@ -38,14 +41,14 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.CardViewHolder
 
     @Override
     public void onBindViewHolder(CardViewHolder holder, int position) {
-        holder.setItem(cardList.get(position));
-        holder.bind(cardList.get(position), listener,position -1);
+        holder.setItem(getCardList().get(position));
+        holder.bind(getCardList().get(position), listener, position);
     }
 
 
     @Override
     public int getItemCount() {
-        return cardList.size();
+        return getCardList().size();
     }
 
     @Override
@@ -53,51 +56,73 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.CardViewHolder
         super.onAttachedToRecyclerView(recyclerView);
     }
 
+    public List<Card> getCardList() {
+        return cardList;
+    }
+
+    public void setCardList(List<Card> cardList) {
+        this.cardList = cardList;
+    }
 
 
     static class CardViewHolder extends RecyclerView.ViewHolder {
 
         Context context;
 
+        @BindView(R.id.cardRow)
+        public RelativeLayout cardRow;
+
+        @BindView(R.id.linearLayoutCardContent)
+        public LinearLayout linearLayoutCardContent;
+
         @BindView(R.id.cardRelativeLayout)
-        RelativeLayout cardRelativeLayout;
+        public RelativeLayout cardRelativeLayout;
 
         @BindView(R.id.textViewAmount)
         TextView textViewAmount;
+
+        @BindView(R.id.textViewAmount2)
+        TextView textViewAmount2;
 
 
         private CardViewHolder(View v) {
             super(v);
             context = v.getContext();
-            ButterKnife.bind(this,v);
+            ButterKnife.bind(this, v);
+
+            int margin = (int) context.getResources().getDimension(R.dimen.margin);
+
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, cardContainerHeight);
+            params.setMargins(0, 0, 0, margin);
+            linearLayoutCardContent.setLayoutParams(params);
         }
 
         private void setItem(Card card) {
-
             textViewAmount.setText(String.valueOf(card.value));
+            textViewAmount2.setText(String.valueOf(card.value));
 
-
-            int marginFlatten = (int) context.getResources().getDimension(R.dimen.margin_card_flatten);
-            int margin = (int) context.getResources().getDimension(R.dimen.margin);
-
-            RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) cardRelativeLayout.getLayoutParams();
-
-            if(card.isExpanded()){
-                params.setMargins(0, 0, 0, margin);
-            }else{
-                params.setMargins(0, 0, 0,marginFlatten);
-            }
-
-            cardRelativeLayout.setLayoutParams(params);
-            cardRelativeLayout.setVisibility(View.VISIBLE);
-
+            linearLayoutCardContent.setVisibility(View.GONE);
+            cardRow.setBackgroundResource(R.drawable.shape_card_top);
         }
 
-        public void bind(final Card card, final OnCardClickListener listener, final int previousPosition) {
+        public void bind(final Card card, final OnCardClickListener listener, final int position) {
 
             itemView.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View v) {
-                    listener.onCardClick(card,itemView,previousPosition);
+                @Override
+                public void onClick(View v) {
+
+                    card.setSelected(!card.isSelected());
+
+                    if (card.isSelected()) {
+                        cardRow.setBackgroundResource(R.color.transparent);
+                        linearLayoutCardContent.setVisibility(View.VISIBLE);
+                    } else {
+                        cardRow.setBackgroundResource(R.drawable.shape_card_top);
+                        linearLayoutCardContent.setVisibility(View.GONE);
+                    }
+
+                    listener.onCardClick(card, itemView,position-1);
+
                 }
             });
         }

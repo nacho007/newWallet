@@ -3,5 +3,6 @@
 
     <dimen name="padding">16dp</dimen>
     <dimen name="margin">16dp</dimen>
-    <dimen name="margin_card_flatten">-170dp</dimen>
+    <dimen name="margin_card_flatten">-16dp</dimen>
+    <dimen name="card_height">220dp</dimen>
 </resources>

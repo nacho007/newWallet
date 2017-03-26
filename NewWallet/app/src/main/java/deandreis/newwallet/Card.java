@@ -13,7 +13,8 @@ public class Card {
     String cardNumber;
     String expiration;
     String cvv;
-    boolean expanded;
+    boolean selected;
+
 
     public Card(){
         start++;
@@ -26,11 +27,11 @@ public class Card {
 
     }
 
-    public boolean isExpanded() {
-        return expanded;
+    public boolean isSelected() {
+        return selected;
     }
 
-    public void setExpanded(boolean expanded) {
-        this.expanded = expanded;
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 }
