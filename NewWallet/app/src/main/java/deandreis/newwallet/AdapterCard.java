@@ -41,8 +41,8 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.CardViewHolder
 
     @Override
     public void onBindViewHolder(CardViewHolder holder, int position) {
-        holder.setItem(getCardList().get(position));
-        holder.bind(getCardList().get(position), listener, position);
+        holder.setItem(getCardList().get(position),position == getCardList().size() - 1);
+        holder.bind(getCardList().get(position), listener, position, position == getCardList().size() - 1);
     }
 
 
@@ -75,6 +75,9 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.CardViewHolder
         @BindView(R.id.linearLayoutCardContent)
         public LinearLayout linearLayoutCardContent;
 
+        @BindView(R.id.linearLayoutCardContent2)
+        public LinearLayout linearLayoutCardContent2;
+
         @BindView(R.id.cardRelativeLayout)
         public RelativeLayout cardRelativeLayout;
 
@@ -83,6 +86,12 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.CardViewHolder
 
         @BindView(R.id.textViewAmount2)
         TextView textViewAmount2;
+
+        @BindView(R.id.textViewAmountheader)
+        TextView textViewAmountheader;
+
+        @BindView(R.id.dataTextView)
+        TextView dataTextView;
 
 
         private CardViewHolder(View v) {
@@ -97,15 +106,26 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.CardViewHolder
             linearLayoutCardContent.setLayoutParams(params);
         }
 
-        private void setItem(Card card) {
+        private void setItem(Card card, boolean last) {
             textViewAmount.setText(String.valueOf(card.value));
             textViewAmount2.setText(String.valueOf(card.value));
 
+            textViewAmountheader.setText(String.valueOf(card.value));
+
             linearLayoutCardContent.setVisibility(View.GONE);
-            cardRow.setBackgroundResource(R.drawable.shape_card_top);
+            cardRelativeLayout.setBackgroundResource(R.drawable.shape_card);
+
+            if(last){
+                linearLayoutCardContent2.setVisibility(View.VISIBLE);
+                cardRow.setBackgroundResource(R.color.transparent);
+            }else{
+                linearLayoutCardContent2.setVisibility(View.GONE);
+                cardRow.setBackgroundResource(R.drawable.shape_card_top);
+            }
+
         }
 
-        public void bind(final Card card, final OnCardClickListener listener, final int position) {
+        public void bind(final Card card, final OnCardClickListener listener, final int position, final boolean last) {
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -114,11 +134,24 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.CardViewHolder
                     card.setSelected(!card.isSelected());
 
                     if (card.isSelected()) {
+                        textViewAmountheader.setVisibility(View.GONE);
                         cardRow.setBackgroundResource(R.color.transparent);
                         linearLayoutCardContent.setVisibility(View.VISIBLE);
+
+                        if(last){
+                            linearLayoutCardContent2.setVisibility(View.GONE);
+                        }
+
                     } else {
+                        textViewAmountheader.setVisibility(View.VISIBLE);
                         cardRow.setBackgroundResource(R.drawable.shape_card_top);
                         linearLayoutCardContent.setVisibility(View.GONE);
+
+                        if(last){
+                            cardRow.setBackgroundResource(R.color.transparent);
+                            linearLayoutCardContent2.setVisibility(View.VISIBLE);
+                        }
+
                     }
 
                     listener.onCardClick(card, itemView,position-1);

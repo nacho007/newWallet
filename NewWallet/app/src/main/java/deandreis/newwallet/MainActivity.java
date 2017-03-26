@@ -134,47 +134,61 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
 
                 cardCollapsedSelectedTopDistance = originalPos[1] - top;
 
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
+                if(previousPosition >= 0){
 
-                        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                            @Override
-                            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                                super.onScrollStateChanged(recyclerView, newState);
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
 
-                                if (newState == 0) {
+                            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                                @Override
+                                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                                    super.onScrollStateChanged(recyclerView, newState);
 
-                                    if (previousPosition >= 0 && !isGone) {
-                                        isGone = true;
-                                        processing = false;
-                                        previousCardViewHolder = (AdapterCard.CardViewHolder) recyclerView.findViewHolderForAdapterPosition(previousPosition);
-                                        previousCardViewHolder.cardRow.setVisibility(View.GONE);
-                                        recyclerView.removeOnScrollListener(this);
+                                    if (newState == 0) {
+
+                                        if (!isGone) {
+                                            isGone = true;
+                                            processing = false;
+
+                                            if(previousPosition >= 0){
+                                                previousCardViewHolder = (AdapterCard.CardViewHolder) recyclerView.findViewHolderForAdapterPosition(previousPosition);
+                                                previousCardViewHolder.cardRow.setVisibility(View.GONE);
+                                            }
+
+                                            recyclerView.removeOnScrollListener(this);
+                                        }
+
                                     }
 
                                 }
 
-                            }
+                                @Override
+                                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                                    super.onScrolled(recyclerView, dx, dy);
+                                }
+                            });
 
-                            @Override
-                            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                                super.onScrolled(recyclerView, dx, dy);
-                            }
-                        });
+                            recyclerView.smoothScrollBy(0, cardCollapsedSelectedTopDistance, new DecelerateInterpolator());
+                        }
+                    }, 100);
 
-                        recyclerView.smoothScrollBy(0, cardCollapsedSelectedTopDistance, new DecelerateInterpolator());
-                    }
-                }, 100);
+                }else{
+                    isGone = true;
+                    processing = false;
+                }
 
             } else {
                 processing = false;
                 viewAux.setClickable(false);
                 viewAux.setVisibility(View.GONE);
-                if (previousPosition >= 0 && isGone) {
+                if (isGone) {
                     isGone = false;
-                    previousCardViewHolder.cardRow.setVisibility(View.VISIBLE);
+                    if(previousPosition >= 0){
+                        previousCardViewHolder.cardRow.setVisibility(View.VISIBLE);
+                    }
+
                 }
                 cardCollapsedSelectedTopDistance = -cardCollapsedSelectedTopDistance;
                 recyclerView.scrollBy(0, cardCollapsedSelectedTopDistance);
