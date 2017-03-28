@@ -1,5 +1,7 @@
 package deandreis.newwallet;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,6 +13,8 @@ import android.util.TypedValue;
 import android.view.Display;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
+import android.view.animation.LinearInterpolator;
+import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 
@@ -38,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
     static int cardCollapsedSelectedTopDistance;
     public static int cardContainerHeight;
     int screenHeight;
+    int padding;
 
 
     @Override
@@ -60,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
         display.getSize(size);
         screenHeight = size.y;
 
-        final int padding = (int) getResources().getDimension(R.dimen.padding);
+        padding = (int) getResources().getDimension(R.dimen.padding);
 
         TypedValue tv = new TypedValue();
         if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
@@ -106,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
     boolean processing = false;
 
     public void onViewClick(View v) {
-        if(!processing){
+        if (!processing) {
             currentCardViewHolder.performClick();
         }
 
@@ -114,8 +119,10 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
     }
 
 
+    int originalPos[] = new int[2];
+
     @Override
-    public void onCardClick(final Card card, View view, final int previousPosition) {
+    public void onCardClick(final Card card, final View view, final int previousPosition, final boolean last) {
 
         if (!processing) {
             processing = true;
@@ -123,7 +130,6 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
             currentCardViewHolder = view;
             this.previousPosition = previousPosition;
 
-            int originalPos[] = new int[2];
             view.getLocationOnScreen(originalPos);
 
             Log.v("clicked on click", originalPos[1] + "");
@@ -134,12 +140,43 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
 
                 cardCollapsedSelectedTopDistance = originalPos[1] - top;
 
-                if(previousPosition >= 0){
+                if (previousPosition >= 0) {
 
-                    Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
+                    final AdapterCard.CardViewHolder currentViewHolder =
+                            (AdapterCard.CardViewHolder) recyclerView.findViewHolderForAdapterPosition(previousPosition +1);
+
+                    int start = currentViewHolder.textViewAmountheader.getHeight();
+                    final int marginFlatten = (int)getResources().getDimension(R.dimen.margin_card_flatten);
+
+                    ValueAnimator valueAnimator;
+                    valueAnimator = ValueAnimator.ofInt( (padding*3) + start,cardContainerHeight);
+                    valueAnimator.setDuration(250);
+                    valueAnimator.setInterpolator(new LinearInterpolator());
+
+                    valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                        public void onAnimationUpdate(ValueAnimator animation) {
+                            Integer value = (Integer) animation.getAnimatedValue();
+
+                            if(!last){
+                                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) currentViewHolder.linearLayoutCardContent.getLayoutParams();
+                                lp.setMargins(0, 0, 0, marginFlatten);
+                                currentViewHolder.linearLayoutCardContent.setLayoutParams(lp);
+                            }
+                            currentViewHolder.linearLayoutCardContent.getLayoutParams().height = value.intValue();
+                            currentViewHolder.linearLayoutCardContent.requestLayout();
+                        }
+                    });
+
+                    valueAnimator.addListener(new Animator.AnimatorListener() {
                         @Override
-                        public void run() {
+                        public void onAnimationStart(Animator animator) {
+                            currentViewHolder.linearLayoutCardContent.setVisibility(View.VISIBLE);
+                            currentViewHolder.textViewAmountheader.setVisibility(View.GONE);
+                            currentViewHolder.cardRow.setBackgroundResource(R.color.transparent);
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animator) {
 
                             recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                                 @Override
@@ -152,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
                                             isGone = true;
                                             processing = false;
 
-                                            if(previousPosition >= 0){
+                                            if (previousPosition >= 0) {
                                                 previousCardViewHolder = (AdapterCard.CardViewHolder) recyclerView.findViewHolderForAdapterPosition(previousPosition);
                                                 previousCardViewHolder.cardRow.setVisibility(View.GONE);
                                             }
@@ -172,9 +209,21 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
 
                             recyclerView.smoothScrollBy(0, cardCollapsedSelectedTopDistance, new DecelerateInterpolator());
                         }
-                    }, 100);
 
-                }else{
+                        @Override
+                        public void onAnimationCancel(Animator animator) {
+
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animator animator) {
+
+                        }
+                    });
+
+                    valueAnimator.start();
+
+                } else {
                     isGone = true;
                     processing = false;
                 }
@@ -185,7 +234,7 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
                 viewAux.setVisibility(View.GONE);
                 if (isGone) {
                     isGone = false;
-                    if(previousPosition >= 0){
+                    if (previousPosition >= 0) {
                         previousCardViewHolder.cardRow.setVisibility(View.VISIBLE);
                     }
 

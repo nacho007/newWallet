@@ -88,7 +88,7 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.CardViewHolder
         TextView textViewAmount2;
 
         @BindView(R.id.textViewAmountheader)
-        TextView textViewAmountheader;
+        public TextView textViewAmountheader;
 
         @BindView(R.id.dataTextView)
         TextView dataTextView;
@@ -134,12 +134,12 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.CardViewHolder
                     card.setSelected(!card.isSelected());
 
                     if (card.isSelected()) {
-                        textViewAmountheader.setVisibility(View.GONE);
-                        cardRow.setBackgroundResource(R.color.transparent);
-                        linearLayoutCardContent.setVisibility(View.VISIBLE);
+
+//                        textViewAmountheader.setVisibility(View.GONE);
+//                        cardRow.setBackgroundResource(R.color.transparent);
 
                         if(last){
-                            linearLayoutCardContent2.setVisibility(View.GONE);
+//                            linearLayoutCardContent2.setVisibility(View.GONE);
                         }
 
                     } else {
@@ -154,7 +154,7 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.CardViewHolder
 
                     }
 
-                    listener.onCardClick(card, itemView,position-1);
+                    listener.onCardClick(card, itemView,position-1,last);
 
                 }
             });
