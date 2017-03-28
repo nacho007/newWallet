@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
 
                     ValueAnimator valueAnimator;
                     valueAnimator = ValueAnimator.ofInt( (padding*3) + start,cardContainerHeight);
-                    valueAnimator.setDuration(250);
+                    valueAnimator.setDuration(200);
                     valueAnimator.setInterpolator(new LinearInterpolator());
 
                     valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -232,6 +232,7 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
                 processing = false;
                 viewAux.setClickable(false);
                 viewAux.setVisibility(View.GONE);
+
                 if (isGone) {
                     isGone = false;
                     if (previousPosition >= 0) {
@@ -239,8 +240,64 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
                     }
 
                 }
-                cardCollapsedSelectedTopDistance = -cardCollapsedSelectedTopDistance;
-                recyclerView.scrollBy(0, cardCollapsedSelectedTopDistance);
+
+
+
+                final AdapterCard.CardViewHolder currentViewHolder =
+                        (AdapterCard.CardViewHolder) recyclerView.findViewHolderForAdapterPosition(previousPosition +1);
+
+                int start = currentViewHolder.textViewAmountheader.getHeight();
+                final int marginFlatten = (int)getResources().getDimension(R.dimen.margin_card_flatten);
+
+                ValueAnimator valueAnimator;
+                valueAnimator = ValueAnimator.ofInt(cardContainerHeight,(padding*3) + start);
+                valueAnimator.setDuration(400);
+                valueAnimator.setInterpolator(new LinearInterpolator());
+
+                valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        Integer value = (Integer) animation.getAnimatedValue();
+
+                        if(!last){
+                            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) currentViewHolder.linearLayoutCardContent.getLayoutParams();
+                            lp.setMargins(0, 0, 0, marginFlatten);
+                            currentViewHolder.linearLayoutCardContent.setLayoutParams(lp);
+                        }
+                        currentViewHolder.linearLayoutCardContent.getLayoutParams().height = value.intValue();
+                        currentViewHolder.linearLayoutCardContent.requestLayout();
+                    }
+                });
+
+                valueAnimator.addListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animator) {
+                        currentViewHolder.textViewAmountheader.setVisibility(View.VISIBLE);
+                        currentViewHolder.cardRow.setBackgroundResource(R.color.transparent);
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animator) {
+                        currentViewHolder.cardRow.setBackgroundResource(R.drawable.shape_card_top);
+                        currentViewHolder.linearLayoutCardContent.setVisibility(View.GONE);
+//                        cardCollapsedSelectedTopDistance = -cardCollapsedSelectedTopDistance;
+//                        recyclerView.smoothScrollBy(0, cardCollapsedSelectedTopDistance, new DecelerateInterpolator());
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animator) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animator) {
+
+                    }
+                });
+
+                valueAnimator.start();
+
+//                cardCollapsedSelectedTopDistance = -cardCollapsedSelectedTopDistance;
+//                recyclerView.scrollBy(0, cardCollapsedSelectedTopDistance);
             }
 
 

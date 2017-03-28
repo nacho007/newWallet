@@ -143,9 +143,9 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.CardViewHolder
                         }
 
                     } else {
-                        textViewAmountheader.setVisibility(View.VISIBLE);
-                        cardRow.setBackgroundResource(R.drawable.shape_card_top);
-                        linearLayoutCardContent.setVisibility(View.GONE);
+//                        textViewAmountheader.setVisibility(View.VISIBLE);
+//                        cardRow.setBackgroundResource(R.drawable.shape_card_top);
+//                        linearLayoutCardContent.setVisibility(View.GONE);
 
                         if(last){
                             cardRow.setBackgroundResource(R.color.transparent);
