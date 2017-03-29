@@ -130,30 +130,7 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.CardViewHolder
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
                     card.setSelected(!card.isSelected());
-
-                    if (card.isSelected()) {
-
-//                        textViewAmountheader.setVisibility(View.GONE);
-//                        cardRow.setBackgroundResource(R.color.transparent);
-
-                        if(last){
-//                            linearLayoutCardContent2.setVisibility(View.GONE);
-                        }
-
-                    } else {
-//                        textViewAmountheader.setVisibility(View.VISIBLE);
-//                        cardRow.setBackgroundResource(R.drawable.shape_card_top);
-//                        linearLayoutCardContent.setVisibility(View.GONE);
-
-                        if(last){
-                            cardRow.setBackgroundResource(R.color.transparent);
-                            linearLayoutCardContent2.setVisibility(View.VISIBLE);
-                        }
-
-                    }
-
                     listener.onCardClick(card, itemView,position-1,last);
 
                 }

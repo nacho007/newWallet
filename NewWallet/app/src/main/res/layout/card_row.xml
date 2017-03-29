@@ -27,6 +27,7 @@
         android:layout_marginBottom="@dimen/margin"
         android:layout_marginRight="@dimen/margin"
         android:layout_marginTop="@dimen/margin"
+        android:background="@color/colorAccent"
         android:text="200"
         android:textColor="@color/colorWhite"
         android:textSize="24sp" />
@@ -64,6 +65,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
+                android:background="@color/colorPrimaryDark"
                 android:text="200"
                 android:textColor="@color/colorWhite"
                 android:textSize="24sp" />
@@ -110,7 +112,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <RelativeLayout
             android:id="@+id/cardRelativeLayout2"
@@ -138,6 +140,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
+                android:background="@android:color/holo_blue_bright"
                 android:text="200"
                 android:textColor="@color/colorWhite"
                 android:textSize="24sp" />
