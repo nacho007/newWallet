@@ -38,10 +38,9 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
     Card selectedCard;
 
     View currentCardViewHolder;
-    boolean isGone;
-    int previousPosition;
+    int position;
 
-    static int cardCollapsedSelectedTopDistance;
+    static int cardCollapsedSelectedDistanceToTop;
     public static int cardContainerHeight;
     int screenHeight;
     int padding;
@@ -72,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
         TypedValue tv = new TypedValue();
         if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
             int actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
-            cardContainerHeight = screenHeight - actionBarHeight - padding - getStatusBarHeight();
+            cardContainerHeight = screenHeight - actionBarHeight - getStatusBarHeight();
             Log.v("cardContainerHeight", cardContainerHeight + "");
         }
 
@@ -122,14 +121,14 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
 
 
     @Override
-    public void onCardClick(final Card card, final View view, final int previousPosition, final boolean last) {
+    public void onCardClick(final Card card, final View view, final int position, final boolean last) {
 
         if (!processing) {
 
             processing = true;
             selectedCard = card;
             currentCardViewHolder = view;
-            this.previousPosition = previousPosition;
+            this.position = position;
 
             if (card.isSelected()) {
                 animateOpen(view, last);
@@ -142,40 +141,38 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
     }
 
 
-    int originalPos[] = new int[2];
-    int time = 1000;
-    int time2 = 500;
+    int time = 700;
+    int time2 = 350;
 
     private void animateOpen(View view, final boolean last) {
 
-//        viewAux.setClickable(true);
-//        viewAux.setVisibility(View.VISIBLE);
+        viewAux.setClickable(true);
+        viewAux.setVisibility(View.VISIBLE);
 
+        int originalPos[] = new int[2];
         view.getLocationOnScreen(originalPos);
         final int marginFlatten = (int) getResources().getDimension(R.dimen.margin_card_flatten);
 
-        cardCollapsedSelectedTopDistance = originalPos[1] - top;
+        cardCollapsedSelectedDistanceToTop = originalPos[1] - top;
 
+        Log.v("distance", cardCollapsedSelectedDistanceToTop + "");
 
         final AdapterCard.CardViewHolder currentViewHolder =
-                (AdapterCard.CardViewHolder) recyclerView.findViewHolderForAdapterPosition(previousPosition + 1);
+                (AdapterCard.CardViewHolder) recyclerView.findViewHolderForAdapterPosition(position);
 
-        int start = currentViewHolder.textViewAmountheader.getHeight();
+        int cardHeaderHeight = currentViewHolder.textViewAmountheader.getHeight();
 
+        int cardOpenHeight;
 
-        ValueAnimator valueAnimator;
-
-        if(previousPosition + 1 == 0){
-            valueAnimator = ValueAnimator.ofInt((padding * 3) + start, cardContainerHeight + padding * 2);
-        }else{
-            valueAnimator = ValueAnimator.ofInt((padding * 3) + start, cardContainerHeight);
+        if (cardCollapsedSelectedDistanceToTop < 0) {
+            cardOpenHeight = cardContainerHeight + padding - cardCollapsedSelectedDistanceToTop;
+        } else {
+            cardOpenHeight = cardContainerHeight + padding;
         }
 
+        ValueAnimator heightAnimator = ValueAnimator.ofInt((padding * 3) + cardHeaderHeight, cardOpenHeight);
 
-
-        valueAnimator.setDuration(time2);
-
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        heightAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             public void onAnimationUpdate(ValueAnimator animation) {
                 Integer value = (Integer) animation.getAnimatedValue();
                 currentViewHolder.linearLayoutCardContent.getLayoutParams().height = value.intValue();
@@ -183,15 +180,13 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
             }
         });
 
-        valueAnimator.addListener(new Animator.AnimatorListener() {
+        heightAnimator.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
 
-                if (!last) {
-                    RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) currentViewHolder.linearLayoutCardContent.getLayoutParams();
-                    lp.setMargins(0, 0, 0, marginFlatten);
-                    currentViewHolder.linearLayoutCardContent.setLayoutParams(lp);
-                }
+                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) currentViewHolder.linearLayoutCardContent.getLayoutParams();
+                lp.setMargins(0, 0, 0, marginFlatten);
+                currentViewHolder.linearLayoutCardContent.setLayoutParams(lp);
 
                 currentViewHolder.linearLayoutCardContent.setVisibility(View.VISIBLE);
                 currentViewHolder.textViewAmountheader.setVisibility(View.GONE);
@@ -216,14 +211,10 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
         });
 
 
-        valueAnimator.start();
+        PropertyValuesHolder pvhY = PropertyValuesHolder.ofFloat(TRANSLATION_Y, -cardCollapsedSelectedDistanceToTop);
+        ObjectAnimator translationAnimation = ObjectAnimator.ofPropertyValuesHolder(view, pvhY);
 
-
-
-        PropertyValuesHolder pvhY = PropertyValuesHolder.ofFloat(TRANSLATION_Y, -cardCollapsedSelectedTopDistance);
-        ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(view, pvhY);
-
-        animator.addListener(new Animator.AnimatorListener() {
+        translationAnimation.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
 
@@ -231,11 +222,8 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                if (!isGone) {
-                    currentViewHolder.linearLayoutCardContent.setBackgroundResource(R.color.colorWhite);
-                    isGone = true;
-                    processing = false;
-                }
+                currentViewHolder.linearLayoutCardContent.setBackgroundResource(R.color.colorWhite);
+                processing = false;
             }
 
             @Override
@@ -248,37 +236,26 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
 
             }
         });
-        animator.setDuration(time);
-        animator.start();
 
-        processing = false;
+        translationAnimation.setDuration(time);
+        heightAnimator.setDuration(time2);
 
+        heightAnimator.start();
+        translationAnimation.start();
     }
 
 
     private void animateClose(final View view, final boolean last) {
 
-        processing = false;
-        viewAux.setClickable(false);
-        viewAux.setVisibility(View.GONE);
-
-        if (isGone) {
-            isGone = false;
-        }
-
-
         final AdapterCard.CardViewHolder currentViewHolder =
-                (AdapterCard.CardViewHolder) recyclerView.findViewHolderForAdapterPosition(previousPosition + 1);
+                (AdapterCard.CardViewHolder) recyclerView.findViewHolderForAdapterPosition(position);
 
-        int start = currentViewHolder.textViewAmountheader.getHeight();
+        int cardHeaderHeight = currentViewHolder.textViewAmountheader.getHeight();
 
-
-        ValueAnimator valueAnimator;
-        valueAnimator = ValueAnimator.ofInt(cardContainerHeight, (padding * 3) + start);
-        valueAnimator.setDuration(time);
+        ValueAnimator heightAnimator = ValueAnimator.ofInt(cardContainerHeight, (padding * 3) + cardHeaderHeight);
 
 
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        heightAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             public void onAnimationUpdate(ValueAnimator animation) {
                 Integer value = (Integer) animation.getAnimatedValue();
                 currentViewHolder.linearLayoutCardContent.getLayoutParams().height = value.intValue();
@@ -287,12 +264,10 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
         });
 
 
-        valueAnimator.addListener(new Animator.AnimatorListener() {
+        heightAnimator.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
-
                 currentViewHolder.linearLayoutCardContent.setBackgroundResource(R.color.transparent);
-
                 currentViewHolder.textViewAmountheader.setVisibility(View.VISIBLE);
                 currentViewHolder.cardRow.setBackgroundResource(R.color.transparent);
             }
@@ -302,9 +277,15 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
 
                 if (!last) {
                     currentViewHolder.cardRow.setBackgroundResource(R.drawable.shape_card_top);
+                } else {
+                    currentViewHolder.cardRow.setBackgroundResource(R.color.transparent);
                 }
 
                 currentViewHolder.linearLayoutCardContent.setVisibility(View.GONE);
+
+                processing = false;
+                viewAux.setClickable(false);
+                viewAux.setVisibility(View.GONE);
 
             }
 
@@ -320,14 +301,15 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
         });
 
 
-        valueAnimator.start();
-
-
         PropertyValuesHolder pvhY = PropertyValuesHolder.ofFloat(TRANSLATION_Y, 0);
-        ObjectAnimator animator2 = ObjectAnimator.ofPropertyValuesHolder(view, pvhY);
+        ObjectAnimator translationAnimation = ObjectAnimator.ofPropertyValuesHolder(view, pvhY);
 
-        animator2.setDuration(time2);
-        animator2.start();
+        translationAnimation.setDuration(time2);
+        heightAnimator.setDuration(time);
+
+
+        heightAnimator.start();
+        translationAnimation.start();
 
     }
 

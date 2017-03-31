@@ -2,6 +2,7 @@ package deandreis.newwallet;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -90,19 +91,13 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.CardViewHolder
         @BindView(R.id.textViewAmountheader)
         public TextView textViewAmountheader;
 
-        @BindView(R.id.dataTextView)
-        TextView dataTextView;
-
 
         private CardViewHolder(View v) {
             super(v);
             context = v.getContext();
             ButterKnife.bind(this, v);
 
-            int margin = (int) context.getResources().getDimension(R.dimen.margin);
-
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, cardContainerHeight);
-            params.setMargins(0, 0, 0, margin);
             linearLayoutCardContent.setLayoutParams(params);
         }
 
@@ -131,7 +126,8 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.CardViewHolder
                 @Override
                 public void onClick(View v) {
                     card.setSelected(!card.isSelected());
-                    listener.onCardClick(card, itemView,position-1,last);
+                    Log.v("On card clicked", card.value + "");
+                    listener.onCardClick(card, itemView,position,last);
 
                 }
             });

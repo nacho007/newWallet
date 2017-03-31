@@ -7,5 +7,5 @@ import android.view.View;
  */
 
 public interface OnCardClickListener {
-    void onCardClick(Card card,View view, int previousPosition,boolean last);
+    void onCardClick(Card card,View view, int position,boolean last);
 }

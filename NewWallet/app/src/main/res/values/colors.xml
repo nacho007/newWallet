@@ -8,4 +8,5 @@
     <color name="colorCardGrayLight">#2f2f2f</color>
     <color name="colorWhite">#ffffff</color>
     <color name="transparent">@android:color/transparent</color>
+    <color name="colorYellow">#FFFF00</color>
 </resources>
