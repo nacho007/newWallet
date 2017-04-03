@@ -14,6 +14,8 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
@@ -191,9 +193,7 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
             @Override
             public void onAnimationStart(Animator animator) {
 
-                if (last) {
-                    currentViewHolder.linearLayoutAux.setVisibility(View.VISIBLE);
-                }
+                currentViewHolder.linearLayoutAux.setVisibility(View.VISIBLE);
 
                 RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) currentViewHolder.linearLayoutCardContent.getLayoutParams();
                 lp.setMargins(0, 0, 0, marginFlatten);
@@ -297,14 +297,14 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
                 if (!last) {
                     currentViewHolder.cardRow.setBackgroundResource(R.drawable.shape_card_top);
                     currentViewHolder.linearLayoutCardContent.setVisibility(View.GONE);
-                    currentViewHolder.linearLayoutAux.setVisibility(View.GONE);
                 } else {
                     currentViewHolder.cardRow.setBackgroundResource(R.color.transparent);
                     currentViewHolder.linearLayoutCardContent.setVisibility(View.VISIBLE);
-                    currentViewHolder.linearLayoutAux.setVisibility(View.VISIBLE);
                     currentViewHolder.cardRelativeLayout.setBackgroundResource(R.drawable.shape_last_card);
                 }
 
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, cardContainerHeight);
+                currentViewHolder.linearLayoutAux.setLayoutParams(params);
 
                 processing = false;
                 viewAux.setClickable(false);
