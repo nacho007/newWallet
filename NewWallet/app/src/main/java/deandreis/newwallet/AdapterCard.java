@@ -76,17 +76,14 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.CardViewHolder
         @BindView(R.id.linearLayoutCardContent)
         public LinearLayout linearLayoutCardContent;
 
-        @BindView(R.id.linearLayoutCardContent2)
-        public LinearLayout linearLayoutCardContent2;
+        @BindView(R.id.linearLayoutAux)
+        public LinearLayout linearLayoutAux;
 
         @BindView(R.id.cardRelativeLayout)
         public RelativeLayout cardRelativeLayout;
 
         @BindView(R.id.textViewAmount)
         TextView textViewAmount;
-
-        @BindView(R.id.textViewAmount2)
-        TextView textViewAmount2;
 
         @BindView(R.id.textViewAmountheader)
         public TextView textViewAmountheader;
@@ -97,13 +94,12 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.CardViewHolder
             context = v.getContext();
             ButterKnife.bind(this, v);
 
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, cardContainerHeight);
-            linearLayoutCardContent.setLayoutParams(params);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, cardContainerHeight);
+            linearLayoutAux.setLayoutParams(params);
         }
 
         private void setItem(Card card, boolean last) {
             textViewAmount.setText(String.valueOf(card.value));
-            textViewAmount2.setText(String.valueOf(card.value));
 
             textViewAmountheader.setText(String.valueOf(card.value));
 
@@ -111,10 +107,12 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.CardViewHolder
             cardRelativeLayout.setBackgroundResource(R.drawable.shape_card);
 
             if(last){
-                linearLayoutCardContent2.setVisibility(View.VISIBLE);
+                cardRelativeLayout.setBackgroundResource(R.drawable.shape_last_card);
+                linearLayoutCardContent.setVisibility(View.VISIBLE);
+                linearLayoutAux.setVisibility(View.GONE);
                 cardRow.setBackgroundResource(R.color.transparent);
             }else{
-                linearLayoutCardContent2.setVisibility(View.GONE);
+                linearLayoutCardContent.setVisibility(View.GONE);
                 cardRow.setBackgroundResource(R.drawable.shape_card_top);
             }
 
