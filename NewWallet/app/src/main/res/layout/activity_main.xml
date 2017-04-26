@@ -6,14 +6,27 @@
     android:background="@color/colorWhite"
     tools:context="deandreis.newwallet.MainActivity">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingLeft="@dimen/padding"
-        android:paddingRight="@dimen/padding"
-        android:paddingTop="@dimen/padding"
-        android:visibility="visible" />
+        android:layout_height="wrap_content">
+
+        <View
+            android:id="@+id/viewCardsBackground"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/recyclerView"
+            android:layout_margin="@dimen/margin"
+            android:background="@drawable/shape_card_top"
+            android:visibility="visible" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding"
+            android:visibility="visible" />
+    </RelativeLayout>
 
     <View
         android:id="@+id/view"

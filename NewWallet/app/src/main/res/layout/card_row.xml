@@ -1,114 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cardRow"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/margin_card_flatten"
-    android:background="@drawable/shape_card_top">
+    android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/textViewCurrencyheader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/textViewAmountheader"
-        android:layout_toLeftOf="@+id/textViewAmountheader"
-        android:text="USD"
-        android:textColor="@color/colorWhite"
-        android:textSize="18sp" />
+    <RelativeLayout
+        android:id="@+id/cardCollapsed"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/shape_card_top"
+        android:visibility="gone">
 
-    <TextView
-        android:id="@+id/textViewAmountheader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginBottom="@dimen/margin"
-        android:layout_marginRight="@dimen/margin"
-        android:layout_marginTop="@dimen/margin"
-        android:background="@color/colorAccent"
-        android:text="200"
-        android:textColor="@color/colorWhite"
-        android:textSize="24sp" />
+        <TextView
+            android:id="@+id/textViewCurrencyheader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/textViewAmountheader"
+            android:layout_toLeftOf="@+id/textViewAmountheader"
+            android:text="USD"
+            android:textColor="@color/colorWhite"
+            android:textSize="18sp" />
+
+        <View
+            android:id="@+id/cardRowView"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorCardGrayDark" />
+
+        <TextView
+            android:id="@+id/textViewAmountheader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="@dimen/margin"
+            android:layout_marginRight="@dimen/margin"
+            android:layout_marginTop="@dimen/margin"
+            android:background="@color/colorAccent"
+            android:text="200"
+            android:textColor="@color/colorWhite"
+            android:textSize="24sp" />
+    </RelativeLayout>
 
 
     <LinearLayout
-        android:id="@+id/linearLayoutCardContent"
+        android:id="@+id/cardExpanded"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:visibility="gone">
 
 
         <RelativeLayout
+            android:id="@+id/cardRelativeLayout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/card_height">
+            android:layout_height="@dimen/card_height"
+            android:background="@drawable/shape_card"
+            android:padding="@dimen/padding"
+            android:visibility="visible">
 
-            <View
+
+            <TextView
+                android:id="@+id/textViewCurrency"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/textViewAmount"
+                android:layout_toLeftOf="@+id/textViewAmount"
+                android:text="USD"
+                android:textColor="@color/colorWhite"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/textViewAmount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:background="@color/colorPrimaryDark"
+                android:text="200"
+                android:textColor="@color/colorWhite"
+                android:textSize="24sp" />
+
+
+            <ImageView
+                android:id="@+id/logoImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/svg_card_logo" />
+
+            <TextView
+                android:id="@+id/textViewNumber"
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:layout_alignBottom="@+id/cardRelativeLayout"
-                android:background="@color/colorWhite" />
-
-            <RelativeLayout
-                android:id="@+id/cardRelativeLayout"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/card_height"
-                android:background="@drawable/shape_card"
-                android:padding="@dimen/padding"
-                android:visibility="visible">
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:gravity="center_horizontal"
+                android:text="1234     1234     1234     1234"
+                android:textColor="@color/colorWhite"
+                android:textSize="22sp" />
 
 
-                <TextView
-                    android:id="@+id/textViewCurrency"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignBaseline="@+id/textViewAmount"
-                    android:layout_toLeftOf="@+id/textViewAmount"
-                    android:text="USD"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:id="@+id/textViewAmount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentTop="true"
-                    android:background="@color/colorPrimaryDark"
-                    android:text="200"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="24sp" />
-
-
-                <ImageView
-                    android:id="@+id/logoImageView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:scaleType="fitXY"
-                    app:srcCompat="@drawable/svg_card_logo" />
-
-                <TextView
-                    android:id="@+id/textViewNumber"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:gravity="center_horizontal"
-                    android:text="1234     1234     1234     1234"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="22sp" />
-
-
-            </RelativeLayout>
         </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/linearLayoutAux"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:background="@color/colorYellow"
             android:orientation="horizontal">
 

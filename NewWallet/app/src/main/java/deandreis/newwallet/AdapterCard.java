@@ -15,8 +15,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static deandreis.newwallet.MainActivity.cardContainerHeight;
-
 /**
  * Created by ignaciodeandreisdenis on 9/21/16.
  */
@@ -42,7 +40,7 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.CardViewHolder
 
     @Override
     public void onBindViewHolder(CardViewHolder holder, int position) {
-        holder.setItem(getCardList().get(position),position == getCardList().size() - 1);
+        holder.setItem(getCardList().get(position), position == getCardList().size() - 1);
         holder.bind(getCardList().get(position), listener, position, position == getCardList().size() - 1);
     }
 
@@ -73,8 +71,11 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.CardViewHolder
         @BindView(R.id.cardRow)
         public RelativeLayout cardRow;
 
-        @BindView(R.id.linearLayoutCardContent)
-        public LinearLayout linearLayoutCardContent;
+        @BindView(R.id.cardCollapsed)
+        public RelativeLayout cardCollapsed;
+
+        @BindView(R.id.cardExpanded)
+        public LinearLayout cardExpanded;
 
         @BindView(R.id.linearLayoutAux)
         public LinearLayout linearLayoutAux;
@@ -94,38 +95,42 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.CardViewHolder
             context = v.getContext();
             ButterKnife.bind(this, v);
 
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, cardContainerHeight);
-            linearLayoutAux.setLayoutParams(params);
+//            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, cardContainerHeight);
+//            linearLayoutAux.setLayoutParams(params);
         }
 
-        private void setItem(Card card, boolean last) {
-            textViewAmount.setText(String.valueOf(card.value));
+        private void setItem(Card card,boolean last) {
 
+            textViewAmount.setText(String.valueOf(card.value));
             textViewAmountheader.setText(String.valueOf(card.value));
 
-            linearLayoutCardContent.setVisibility(View.GONE);
-            cardRelativeLayout.setBackgroundResource(R.drawable.shape_card);
-            linearLayoutAux.setVisibility(View.GONE);
-
-            if(last){
-                cardRelativeLayout.setBackgroundResource(R.drawable.shape_last_card);
-                linearLayoutCardContent.setVisibility(View.VISIBLE);
-                cardRow.setBackgroundResource(R.color.transparent);
-            }else{
-                linearLayoutCardContent.setVisibility(View.GONE);
-                cardRow.setBackgroundResource(R.drawable.shape_card_top);
+            if (last) {
+                cardExpanded.setVisibility(View.VISIBLE);
+                cardCollapsed.setVisibility(View.GONE);
+            } else {
+                cardExpanded.setVisibility(View.GONE);
+                cardCollapsed.setVisibility(View.VISIBLE);
             }
 
         }
 
         public void bind(final Card card, final OnCardClickListener listener, final int position, final boolean last) {
 
+//            if (last) {
+//                cardRelativeLayout.setBackgroundResource(R.drawable.shape_last_card);
+//                linearLayoutCardContent.setVisibility(View.VISIBLE);
+//                cardRow.setBackgroundResource(R.color.transparent);
+//            } else {
+//                linearLayoutCardContent.setVisibility(View.GONE);
+//                cardRow.setBackgroundResource(R.drawable.shape_card_top);
+//            }
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     card.setSelected(!card.isSelected());
                     Log.v("On card clicked", card.value + "");
-                    listener.onCardClick(card, itemView,position,last);
+                    listener.onCardClick(card, itemView, position, last);
 
                 }
             });
