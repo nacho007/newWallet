@@ -115,7 +115,6 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
 
                 overallYScroll = overallYScroll + dy;
 
-
 //                Log.i("check", "overall->" + overallYScroll);
 
 //                Log.i("lastcomplete", layoutManager.findLastCompletelyVisibleItemPosition() + "");
@@ -133,12 +132,15 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
 
                     scrollOnceEnteredLast = scrollOnceEnteredLast + dy;
 
-//                    Log.i("Scroll", scrollOnceEnteredLast + "");
+                    if(scrollOnceEnteredLast >= 300){
+                        scrollOnceEnteredLast = 300;
+                    }
+
+                    Log.i("Scroll", scrollOnceEnteredLast + "");
 
                     if (scrollOnceEnteredLast >= actionBarHeight / 2) {
                         Log.i("Scroll", "Case 3.1");
                         if (!viewCardsBackground.getTag().equals("shape_card_bottom")) {
-                            Log.v("Log", "shape_card_bottom");
                             viewCardsBackground.setTag("shape_card_bottom");
                             viewCardsBackground.setBackgroundResource(R.drawable.shape_card_bottom);
                         }
