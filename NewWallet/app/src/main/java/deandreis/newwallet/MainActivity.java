@@ -37,6 +37,9 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
     LinearLayoutManager layoutManager;
     RecyclerView.Adapter adapter;
 
+    private int overallYScroll = 0;
+    private int scrollOnceEnteredLast = 0;
+
     int top = 0;
     Card selectedCard;
 
@@ -48,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
     int screenHeight;
     int padding;
 
+    int actionBarHeight = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
 
         TypedValue tv = new TypedValue();
         if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            int actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
             cardContainerHeight = screenHeight - actionBarHeight - getStatusBarHeight();
             Log.v("cardContainerHeight", cardContainerHeight + "");
         }
@@ -109,39 +113,108 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
 
-//                int findFirstVisibleItemPosition();
-//                int findFirstCompletelyVisibleItemPosition();
-//                int findLastVisibleItemPosition();
-//                int findLastCompletelyVisibleItemPosition();
-
-                Log.v("Log", "visible " + layoutManager.findFirstVisibleItemPosition());
-                Log.v("Log", "last " + layoutManager.findLastVisibleItemPosition());
-                Log.v("Log", "getItemCount " + (adapter.getItemCount() - 1));
+                overallYScroll = overallYScroll + dy;
 
 
-//                if(layoutManager.findLastVisibleItemPosition() == (adapter.getItemCount() - 1)){
-//                    if(!viewCardsBackground.getTag().equals("shape_card_bottom")){
-//                        Log.v("Log", "shape_card_bottom");
-//                        viewCardsBackground.setTag("shape_card_bottom");
-//                        viewCardsBackground.setBackgroundResource(R.drawable.shape_card_bottom);
-//                    }
-//                }else if(layoutManager.findFirstVisibleItemPosition() < 1){
-//                    if(!viewCardsBackground.getTag().equals("shape_card_top")){
-//                        viewCardsBackground.setTag("shape_card_top");
-//                        viewCardsBackground.setBackgroundResource(R.drawable.shape_card_top);
-//                    }
-//
-//                }else if(layoutManager.findFirstVisibleItemPosition() >= 1){
-//                    if(!viewCardsBackground.getTag().equals("colorCardGrayDark")){
-//                        viewCardsBackground.setTag("colorCardGrayDark");
-//                        viewCardsBackground.setBackgroundResource(R.color.colorCardGrayDark);
-//                    }
-//                }
+//                Log.i("check", "overall->" + overallYScroll);
 
-             }
+//                Log.i("lastcomplete", layoutManager.findLastCompletelyVisibleItemPosition() + "");
+
+                if (layoutManager.findFirstVisibleItemPosition() < 1 && layoutManager.findLastVisibleItemPosition() == (adapter.getItemCount() - 1)) {
+                    Log.i("Scroll", "Case 1");
+                    scrollOnceEnteredLast = 0;
+                    checkBorderCases(1);
+                } else if (layoutManager.findFirstVisibleItemPosition() < 1) {
+                    Log.i("Scroll", "Case 2");
+                    scrollOnceEnteredLast = 0;
+                    checkBorderCases(2);
+                } else if (layoutManager.findLastVisibleItemPosition() == (adapter.getItemCount() - 1)) {
+                    Log.i("Scroll", "Case 3");
+
+                    scrollOnceEnteredLast = scrollOnceEnteredLast + dy;
+
+//                    Log.i("Scroll", scrollOnceEnteredLast + "");
+
+                    if (scrollOnceEnteredLast >= actionBarHeight / 2) {
+                        Log.i("Scroll", "Case 3.1");
+                        if (!viewCardsBackground.getTag().equals("shape_card_bottom")) {
+                            Log.v("Log", "shape_card_bottom");
+                            viewCardsBackground.setTag("shape_card_bottom");
+                            viewCardsBackground.setBackgroundResource(R.drawable.shape_card_bottom);
+                        }
+                    } else {
+                        Log.i("Scroll", "Case 3.2");
+                        setMediumZone();
+                    }
+
+                } else if (layoutManager.findFirstVisibleItemPosition() >= 1) {
+                    Log.i("Scroll", "Case 4");
+                    scrollOnceEnteredLast = 0;
+                    setMediumZone();
+                }
+
+            }
 
         });
 
+    }
+
+    private void setMediumZone() {
+        if (!viewCardsBackground.getTag().equals("colorCardGrayDark")) {
+            viewCardsBackground.setTag("colorCardGrayDark");
+            viewCardsBackground.setBackgroundResource(R.color.colorCardGrayDark);
+        }
+    }
+
+    private void checkBorderCases(int scenario) {
+        if (overallYScroll >= actionBarHeight / 2) {
+
+            Log.i("Scroll", "Case 2.1");
+
+            if (layoutManager.findLastVisibleItemPosition() == (adapter.getItemCount() - 1)) {
+                Log.i("Scroll", "Case 2.1.1");
+                if (!viewCardsBackground.getTag().equals("shape_card_bottom")) {
+                    viewCardsBackground.setTag("shape_card_bottom");
+                    viewCardsBackground.setBackgroundResource(R.drawable.shape_card_bottom);
+                }
+            } else {
+                Log.i("Scroll", "Case 2.1.2");
+                if (!viewCardsBackground.getTag().equals("colorCardGrayDark")) {
+                    viewCardsBackground.setTag("colorCardGrayDark");
+                    viewCardsBackground.setBackgroundResource(R.color.colorCardGrayDark);
+                }
+            }
+
+        } else {
+            Log.i("Scroll", "Case 2.2");
+
+            if (scenario == 1) {
+                Log.i("Scroll", "Case 2.2.1");
+
+                if (recyclerView.canScrollVertically(View.SCROLL_AXIS_VERTICAL)) {
+                    if (!viewCardsBackground.getTag().equals("shape_card_top")) {
+                        viewCardsBackground.setTag("shape_card_top");
+                        viewCardsBackground.setBackgroundResource(R.drawable.shape_card_top);
+                    }
+                } else {
+                    if (!viewCardsBackground.getTag().equals("shape_card_dark")) {
+                        viewCardsBackground.setTag("shape_card_dark");
+                        viewCardsBackground.setBackgroundResource(R.drawable.shape_card_dark);
+                    }
+                }
+
+            }
+
+            if (scenario == 2) {
+                Log.i("Scroll", "Case 2.2.2");
+                if (!viewCardsBackground.getTag().equals("shape_card_top")) {
+                    viewCardsBackground.setTag("shape_card_top");
+                    viewCardsBackground.setBackgroundResource(R.drawable.shape_card_top);
+                }
+            }
+
+
+        }
     }
 
     public int getStatusBarHeight() {

@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/recyclerView"
             android:layout_margin="@dimen/margin"
-            android:background="@drawable/shape_card_top"
+            android:background="@drawable/shape_card_dark"
             android:visibility="visible" />
 
         <android.support.v7.widget.RecyclerView
