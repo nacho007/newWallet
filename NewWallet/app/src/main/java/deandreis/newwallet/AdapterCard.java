@@ -15,6 +15,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static deandreis.newwallet.MainActivity.cardContainerHeight;
+
 /**
  * Created by ignaciodeandreisdenis on 9/21/16.
  */
@@ -97,12 +99,16 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.CardViewHolder
             super(v);
             context = v.getContext();
             ButterKnife.bind(this, v);
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, cardContainerHeight);
+            linearLayoutAux.setLayoutParams(params);
         }
 
-        private void setItem(Card card, boolean last) {
+        private void setItem(Card card,boolean last) {
 
             textViewAmount.setText(String.valueOf(card.value));
             textViewAmountheader.setText(String.valueOf(card.value));
+
 
             if (last) {
                 cardExpanded.setVisibility(View.VISIBLE);

@@ -66,7 +66,8 @@
                 android:layout_alignBottom="@+id/cardRelativeLayout"
                 android:layout_alignTop="@+id/cardRelativeLayout"
                 android:layout_marginTop="@dimen/margin"
-                android:background="@color/colorWhite" />
+                android:background="@color/colorWhite"
+                android:visibility="visible" />
 
             <RelativeLayout
                 android:id="@+id/cardRelativeLayout"
@@ -126,7 +127,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/colorYellow"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
         </LinearLayout>
 

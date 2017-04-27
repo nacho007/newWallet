@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.graphics.Point;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,8 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
@@ -114,41 +117,45 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
 
-                overallYScroll = overallYScroll + dy;
+                if (!processing) {
 
-                if (layoutManager.findFirstVisibleItemPosition() < 1 && layoutManager.findLastVisibleItemPosition() == (adapter.getItemCount() - 1)) {
-                    Log.i("Scroll", "Case 1");
-                    scrollOnceEnteredLast = 0;
-                    checkBorderCases(1);
-                } else if (layoutManager.findFirstVisibleItemPosition() < 1) {
-                    Log.i("Scroll", "Case 2");
-                    scrollOnceEnteredLast = 0;
-                    checkBorderCases(2);
-                } else if (layoutManager.findLastVisibleItemPosition() == (adapter.getItemCount() - 1)) {
-                    Log.i("Scroll", "Case 3");
+                    overallYScroll = overallYScroll + dy;
+                    Log.i("overallYScroll", overallYScroll + "");
 
-                    scrollOnceEnteredLast = scrollOnceEnteredLast + dy;
+                    if (layoutManager.findFirstVisibleItemPosition() < 1 && layoutManager.findLastVisibleItemPosition() == (adapter.getItemCount() - 1)) {
+                        Log.i("Scroll", "Case 1");
+                        scrollOnceEnteredLast = 0;
+                        checkBorderCases(1);
+                    } else if (layoutManager.findFirstVisibleItemPosition() < 1) {
+                        Log.i("Scroll", "Case 2");
+                        scrollOnceEnteredLast = 0;
+                        checkBorderCases(2);
+                    } else if (layoutManager.findLastVisibleItemPosition() == (adapter.getItemCount() - 1)) {
+                        Log.i("Scroll", "Case 3");
 
-                    if (scrollOnceEnteredLast >= 300) {
-                        scrollOnceEnteredLast = 300;
-                    }
+                        scrollOnceEnteredLast = scrollOnceEnteredLast + dy;
 
-                    Log.i("Scroll", scrollOnceEnteredLast + "");
-
-                    if (scrollOnceEnteredLast >= actionBarHeight / 2) {
-                        Log.i("Scroll", "Case 3.1");
-                        if (!viewCardsBackground.getTag().equals("shape_card_bottom")) {
-                            setViewBackground("shape_card_bottom", R.drawable.shape_card_bottom);
+                        if (scrollOnceEnteredLast >= 300) {
+                            scrollOnceEnteredLast = 300;
                         }
-                    } else {
-                        Log.i("Scroll", "Case 3.2");
+
+                        Log.i("Scroll", scrollOnceEnteredLast + "");
+
+                        if (scrollOnceEnteredLast >= actionBarHeight / 2) {
+                            Log.i("Scroll", "Case 3.1");
+                            if (!viewCardsBackground.getTag().equals("shape_card_bottom")) {
+                                setViewBackground("shape_card_bottom", R.drawable.shape_card_bottom);
+                            }
+                        } else {
+                            Log.i("Scroll", "Case 3.2");
+                            setMediumZone();
+                        }
+
+                    } else if (layoutManager.findFirstVisibleItemPosition() >= 1) {
+                        Log.i("Scroll", "Case 4");
+                        scrollOnceEnteredLast = 0;
                         setMediumZone();
                     }
-
-                } else if (layoutManager.findFirstVisibleItemPosition() >= 1) {
-                    Log.i("Scroll", "Case 4");
-                    scrollOnceEnteredLast = 0;
-                    setMediumZone();
                 }
 
             }
@@ -256,7 +263,7 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
     }
 
 
-    int time = 5000;
+    int time = 500;
 
     private void animateOpen(View view, final boolean last) {
 
@@ -270,6 +277,7 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
 
         Log.v("distance", cardCollapsedSelectedDistanceToTop + "");
 
+
         final AdapterCard.CardViewHolder currentViewHolder =
                 (AdapterCard.CardViewHolder) recyclerView.findViewHolderForAdapterPosition(position);
 
@@ -277,13 +285,25 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
 
         int cardOpenHeight;
 
-        if (cardCollapsedSelectedDistanceToTop < 0) {
-            cardOpenHeight = cardContainerHeight + padding - cardCollapsedSelectedDistanceToTop;
-        } else {
-            cardOpenHeight = cardContainerHeight + padding;
+        int tempPadding = padding;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            tempPadding = padding * 2;
         }
 
-        ValueAnimator heightAnimator = ValueAnimator.ofInt(padding + cardHeaderHeight, cardOpenHeight);
+
+        if (cardCollapsedSelectedDistanceToTop < 0) {
+            cardOpenHeight = cardContainerHeight + tempPadding - cardCollapsedSelectedDistanceToTop;
+        } else {
+            cardOpenHeight = cardContainerHeight + tempPadding;
+        }
+
+
+        ValueAnimator heightAnimator = ValueAnimator.ofInt(tempPadding + cardHeaderHeight, cardOpenHeight);
+
+        currentViewHolder.linearLayoutAux.setVisibility(View.VISIBLE);
+        RelativeLayout.LayoutParams paramsContainer = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, cardContainerHeight);
+        currentViewHolder.cardExpanded.setLayoutParams(paramsContainer);
 
         heightAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -319,6 +339,8 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
                 currentViewHolder.cardHelperBackground.setLayoutParams(params);
 
                 processing = false;
+
+                Log.v("height", currentViewHolder.linearLayoutAux.getHeight() + "");
             }
 
             @Override
@@ -349,9 +371,9 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
 
         ValueAnimator heightAnimator;
 
-        if(!last){
+        if (!last) {
             heightAnimator = ValueAnimator.ofInt(cardContainerHeight, padding + cardHeaderHeight);
-        }else{
+        } else {
             heightAnimator = ValueAnimator.ofInt(cardContainerHeight, 0);
         }
 
@@ -360,14 +382,13 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
             public void onAnimationUpdate(ValueAnimator animation) {
                 Integer value = (Integer) animation.getAnimatedValue();
 
-                if(!last){
-                    currentViewHolder.cardExpanded.getLayoutParams().height = value.intValue();
-                    currentViewHolder.cardExpanded.requestLayout();
-                }else{
+                if (last) {
                     currentViewHolder.linearLayoutAux.getLayoutParams().height = value.intValue();
                     currentViewHolder.linearLayoutAux.requestLayout();
+                } else {
+                    currentViewHolder.cardExpanded.getLayoutParams().height = value.intValue();
+                    currentViewHolder.cardExpanded.requestLayout();
                 }
-
             }
         });
 
@@ -380,9 +401,9 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
                 params.setMargins(0, (int) getResources().getDimension(R.dimen.margin), 0, 0);
                 currentViewHolder.cardHelperBackground.setLayoutParams(params);
 
-                if(!last){
+                if (!last) {
                     currentViewHolder.cardCollapsed.setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     currentViewHolder.cardCollapsed.setVisibility(View.GONE);
                 }
 
@@ -391,9 +412,18 @@ public class MainActivity extends AppCompatActivity implements OnCardClickListen
             @Override
             public void onAnimationEnd(Animator animator) {
 
-                if(!last){
+                if (!last) {
                     currentViewHolder.cardExpanded.setVisibility(View.GONE);
+                } else {
+                    currentViewHolder.cardExpanded.setVisibility(View.VISIBLE);
                 }
+
+                RelativeLayout.LayoutParams paramsContainer = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) getResources().getDimension(R.dimen.card_height));
+                currentViewHolder.cardExpanded.setLayoutParams(paramsContainer);
+
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, cardContainerHeight);
+                currentViewHolder.linearLayoutAux.setLayoutParams(params);
+                currentViewHolder.linearLayoutAux.setVisibility(View.GONE);
 
                 processing = false;
                 viewAux.setClickable(false);
