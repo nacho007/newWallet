@@ -77,6 +77,9 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.CardViewHolder
         @BindView(R.id.cardExpanded)
         public LinearLayout cardExpanded;
 
+        @BindView(R.id.cardHelperBackground)
+        public View cardHelperBackground;
+
         @BindView(R.id.linearLayoutAux)
         public LinearLayout linearLayoutAux;
 
@@ -94,12 +97,9 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.CardViewHolder
             super(v);
             context = v.getContext();
             ButterKnife.bind(this, v);
-
-//            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, cardContainerHeight);
-//            linearLayoutAux.setLayoutParams(params);
         }
 
-        private void setItem(Card card,boolean last) {
+        private void setItem(Card card, boolean last) {
 
             textViewAmount.setText(String.valueOf(card.value));
             textViewAmountheader.setText(String.valueOf(card.value));
@@ -115,15 +115,6 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.CardViewHolder
         }
 
         public void bind(final Card card, final OnCardClickListener listener, final int position, final boolean last) {
-
-//            if (last) {
-//                cardRelativeLayout.setBackgroundResource(R.drawable.shape_last_card);
-//                linearLayoutCardContent.setVisibility(View.VISIBLE);
-//                cardRow.setBackgroundResource(R.color.transparent);
-//            } else {
-//                linearLayoutCardContent.setVisibility(View.GONE);
-//                cardRow.setBackgroundResource(R.drawable.shape_card_top);
-//            }
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
