@@ -42,8 +42,8 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.CardViewHolder
 
     @Override
     public void onBindViewHolder(CardViewHolder holder, int position) {
-        holder.setItem(getCardList().get(position), position == getCardList().size() - 1);
-        holder.bind(getCardList().get(position), listener, position, position == getCardList().size() - 1);
+        holder.setItem(getCardList().get(position),cardList.size() == 1, position, position == getCardList().size() - 1);
+        holder.bind(getCardList().get(position), listener, position, position == 0, position == getCardList().size() - 1);
     }
 
 
@@ -79,8 +79,11 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.CardViewHolder
         @BindView(R.id.cardExpanded)
         public LinearLayout cardExpanded;
 
-        @BindView(R.id.cardHelperBackground)
-        public View cardHelperBackground;
+        @BindView(R.id.cardHelperBackgroundTop)
+        public View cardHelperBackgroundTop;
+
+        @BindView(R.id.cardHelperBackgroundBottom)
+        public View cardHelperBackgroundBottom;
 
         @BindView(R.id.linearLayoutAux)
         public LinearLayout linearLayoutAux;
@@ -94,6 +97,9 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.CardViewHolder
         @BindView(R.id.textViewAmountheader)
         public TextView textViewAmountheader;
 
+        @BindView(R.id.cardRowViewTop)
+        public View cardRowViewTop;
+
 
         private CardViewHolder(View v) {
             super(v);
@@ -104,12 +110,30 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.CardViewHolder
             linearLayoutAux.setLayoutParams(params);
         }
 
-        private void setItem(Card card,boolean last) {
+        private void setItem(Card card, boolean singleItem, int position, boolean last) {
 
             textViewAmount.setText(String.valueOf(card.value));
             textViewAmountheader.setText(String.valueOf(card.value));
 
+            //COLLAPSED
+            if(position == 0){
+                cardRowViewTop.setVisibility(View.GONE);
+            }else{
+                cardRowViewTop.setVisibility(View.VISIBLE);
+            }
 
+
+            //EXPANDED
+            if(singleItem){
+                cardHelperBackgroundTop.setVisibility(View.GONE);
+            }else{
+                cardHelperBackgroundTop.setVisibility(View.VISIBLE);
+            }
+
+            cardHelperBackgroundTop.setBackgroundResource(R.color.colorCardGrayDark);
+
+
+            //COMMON
             if (last) {
                 cardExpanded.setVisibility(View.VISIBLE);
                 cardCollapsed.setVisibility(View.GONE);
@@ -118,16 +142,17 @@ public class AdapterCard extends RecyclerView.Adapter<AdapterCard.CardViewHolder
                 cardCollapsed.setVisibility(View.VISIBLE);
             }
 
+
         }
 
-        public void bind(final Card card, final OnCardClickListener listener, final int position, final boolean last) {
+        public void bind(final Card card, final OnCardClickListener listener, final int position, final boolean first, final boolean last) {
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     card.setSelected(!card.isSelected());
                     Log.v("On card clicked", card.value + "");
-                    listener.onCardClick(card, itemView, position, last);
+                    listener.onCardClick(card, itemView, position,first, last);
 
                 }
             });

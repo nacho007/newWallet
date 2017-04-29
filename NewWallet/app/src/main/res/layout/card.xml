@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@drawable/shape_card_dark"
+    android:padding="@dimen/padding">
+
+    <LinearLayout
+        android:id="@+id/layout_item_card_pending_linearlayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin"
+        android:elevation="4dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/layout_item_card_textview_pending"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="false"
+            android:layout_centerInParent="false"
+            android:layout_centerVertical="true"
+            android:background="@color/colorPrimary"
+            android:paddingBottom="@dimen/margin"
+            android:paddingLeft="@dimen/margin"
+            android:paddingStart="@dimen/margin"
+            android:paddingTop="@dimen/margin"
+            android:text="Pending"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/layout_item_card_imageview_pending"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/svg_pending_triangle" />
+
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textViewCurrency"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textViewAmount"
+        android:layout_toLeftOf="@+id/textViewAmount"
+        android:text="USD"
+        android:textColor="@color/colorWhite"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/textViewAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:background="@color/colorPrimaryDark"
+        android:text="200"
+        android:textColor="@color/colorWhite"
+        android:textSize="24sp" />
+
+
+    <ImageView
+        android:id="@+id/logoImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:scaleType="fitXY"
+        app:srcCompat="@drawable/svg_card_logo" />
+
+    <TextView
+        android:id="@+id/textViewNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_horizontal"
+        android:text="1234     1234     1234     1234"
+        android:textColor="@color/colorWhite"
+        android:textSize="22sp" />
+
+    <TextView
+        android:id="@+id/textViewCvv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/textViewNumber"
+        android:layout_alignParentLeft="true"
+        android:background="@color/colorPrimaryDark"
+        android:text="CVV"
+        android:textColor="@color/colorWhite"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/textViewCvvData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/textViewNumber"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/textViewCvv"
+        android:background="@color/colorPrimaryDark"
+        android:text="1111"
+        android:textColor="@color/colorWhite"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/textViewExp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/textViewNumber"
+        android:layout_marginRight="10dp"
+        android:layout_toLeftOf="@+id/textViewExpData"
+        android:background="@color/colorPrimaryDark"
+        android:text="EXP"
+        android:textColor="@color/colorWhite"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/textViewExpData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/textViewNumber"
+        android:layout_alignParentRight="true"
+        android:background="@color/colorPrimaryDark"
+        android:text="01/18"
+        android:textColor="@color/colorWhite"
+        android:textSize="24sp" />
+
+</RelativeLayout>

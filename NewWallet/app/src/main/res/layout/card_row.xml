@@ -2,10 +2,18 @@
 
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cardRow"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
+
+    <View
+        android:id="@+id/cardRowViewTop"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignBottom="@+id/cardCollapsed"
+        android:layout_alignParentTop="true"
+        android:background="@color/colorCardGrayDark"
+        android:visibility="gone" />
 
     <RelativeLayout
         android:id="@+id/cardCollapsed"
@@ -25,7 +33,7 @@
             android:textSize="18sp" />
 
         <View
-            android:id="@+id/cardRowView"
+            android:id="@+id/cardRowViewBottom"
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:layout_alignParentBottom="true"
@@ -60,66 +68,31 @@
             android:layout_height="@dimen/card_height">
 
             <View
-                android:id="@+id/cardHelperBackground"
+                android:id="@+id/cardHelperBackgroundTop"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/cardRelativeLayout"
+                android:layout_alignTop="@+id/cardRelativeLayout"
+                android:layout_marginBottom="@dimen/margin"
+                android:background="@color/colorCardGrayDark"
+                android:visibility="visible" />
+
+            <View
+                android:id="@+id/cardHelperBackgroundBottom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/cardRelativeLayout"
                 android:layout_alignTop="@+id/cardRelativeLayout"
                 android:layout_marginTop="@dimen/margin"
                 android:background="@color/colorWhite"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
-            <RelativeLayout
+            <include
                 android:id="@+id/cardRelativeLayout"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/card_height"
-                android:background="@drawable/shape_card_dark"
-                android:padding="@dimen/padding"
-                android:visibility="visible">
+                layout="@layout/card"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/card_height" />
 
-
-                <TextView
-                    android:id="@+id/textViewCurrency"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignBaseline="@+id/textViewAmount"
-                    android:layout_toLeftOf="@+id/textViewAmount"
-                    android:text="USD"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:id="@+id/textViewAmount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentTop="true"
-                    android:background="@color/colorPrimaryDark"
-                    android:text="200"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="24sp" />
-
-
-                <ImageView
-                    android:id="@+id/logoImageView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:scaleType="fitXY"
-                    app:srcCompat="@drawable/svg_card_logo" />
-
-                <TextView
-                    android:id="@+id/textViewNumber"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:gravity="center_horizontal"
-                    android:text="1234     1234     1234     1234"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="22sp" />
-
-
-            </RelativeLayout>
         </RelativeLayout>
 
         <LinearLayout
